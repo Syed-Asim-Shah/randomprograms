@@ -1,0 +1,80 @@
+%include 'asm_io.inc'
+
+segment .data
+
+prompt1 db "String is a palindrome?: ", 0
+out1 db "True", 0
+out2 db "False", 0
+
+segment .bss
+
+count resd 1
+string resd 1
+
+segment .text
+	global asm_main
+	
+asm_main:
+	enter	0,0
+	pusha
+
+	mov 	eax,prompt1
+	call	print_string
+
+	mov	eax, 3
+	mov	ebx, 0
+	mov	ecx, string
+	mov	edx, 10
+	int	0x80
+	
+	
+	xor ebx,ebx
+		
+string_loop:	
+	mov	al, byte [ecx+ebx]
+	test	al,al
+	jz	next
+	inc	ebx
+	jmp	string_loop	
+
+
+next:
+	dec	ebx
+	dec	ebx
+	mov	esi,ebx
+	mov	[count],ebx
+			
+	cmp	ebx,1
+	je	string_true
+	xor	ebx,ebx
+		
+loop:
+	cmp 	ebx, [count]	    
+	jge	string_true	
+
+	mov	al, byte [ecx+ebx]    
+	mov	ah, byte [ecx+esi]    
+	
+	cmp	ah,al		      
+	jne	string_false
+	
+	inc	ebx		      
+	dec	esi		     
+	jmp	loop		      
+
+string_true:	
+	mov	eax,out1
+	call	print_string
+	call	print_nl
+	jmp	exit
+string_false:
+	mov	eax,out2
+	call	print_string
+	call	print_nl
+	jmp	exit
+
+
+exit:	
+	mov	eax, 0
+	leave
+	ret
