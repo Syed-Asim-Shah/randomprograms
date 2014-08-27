@@ -1,0 +1,62 @@
+%include 'asm_io.inc'
+
+segment .data
+
+prompt1 db "Enter a signed or unsigned number number: ", 0
+outmsg1 db "-", 0
+
+segment .bss
+
+input1 resd 1
+array resb 20
+
+segment .text
+	global asm_main
+asm_main:
+	enter	0,0
+	pusha
+
+	mov	eax, prompt1
+	call	print_string
+
+	call	read_int
+	mov	[input1], eax
+	
+	cmp eax,0
+	jg jump_one
+	
+	mov	ecx, -1
+	imul ecx
+
+	mov	ecx,eax
+	mov	eax,outmsg1
+
+	call	print_string
+
+	mov eax,ecx
+
+	
+	jump_one:
+
+	add	esi,19
+	lea	esi,[array]
+	
+	mov ecx,10
+
+	jump_two:
+	mov	edx,0
+	div	ecx
+	add	dl, '0'
+	dec	esi
+	mov	[esi],dl
+	cmp	eax,0
+	jne	jump_two
+	
+
+	mov	eax,esi
+	call	print_string
+	call    print_nl
+	
+	mov	eax, 0
+	leave
+	ret
