@@ -1,0 +1,33 @@
+#!/bin/bash
+
+for i in $*
+do	
+	if [ -f $i ]
+	then
+	date=$(date +"%d-%m-%y")
+	for ((x=1 ; x <= 100000 ; x++))
+	do
+		dummy=$(echo $i. | cut -d "." -f "$x")
+	
+		if [ ! $dummy > /dev/null ]
+		then
+			count=$((x-1))
+			Last=$(echo $i | cut -d "." -f "$count")
+			first=$(echo $i | cut --complement -d "." -f "$count")
+			
+			if [ $count -eq 1 ]
+			then
+				final=$first'_'$date	
+			else
+				final=$first'_'$date.$Last
+			fi
+			
+			echo Renaming $i to $final
+			mv $i $final
+			break
+		fi
+	done
+	else
+		echo $i Is a Directory
+	fi
+done
