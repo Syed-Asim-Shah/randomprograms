@@ -1,6 +1,5 @@
 ;Syed Asim Shah
-;1162852
-;3F03 Assignment 3
+
 
 %define type	[ebp + 12]
 %define v	[ebp + 8 ]	
