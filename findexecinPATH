@@ -1,0 +1,5 @@
+#!/bin/bash
+dummy=$(echo $*|sed 's/ / -o -name /g')
+pathWithspaces=$(echo $PATH | sed 's/:/ /g')
+find $pathWithspaces -name $dummy
+
