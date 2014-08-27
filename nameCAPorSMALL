@@ -1,0 +1,86 @@
+#!/bin/bash
+lu=false
+pri=false
+
+options=':vc'
+while getopts $options option
+do
+    case $option in
+        v  ) pri=true;;
+        c  ) lu=true;;
+        \? ) echo "Unknown option: -$OPTARG" >&2; exit 1;;
+        :  ) echo "Missing option argument for -$OPTARG" >&2; exit 1;;
+        *  ) echo "Unimplemented option: -$OPTARG" >&2; exit 1;;
+    esac
+done
+
+shift $(($OPTIND - 1))
+
+
+if [ $# -eq "0" ]
+then
+	echo "No Input Arguments"
+	exit
+fi
+
+if [ -d "$*" ]
+then	
+	dummy=$(ls $*|xargs)
+	dir="$*"/
+
+elif [ -f "$1" ]
+then
+
+	dummy="$*"
+	dir= 
+fi
+ 
+for i in $dummy
+do
+	if [ $lu == true ]
+	then
+		x=$(echo "$i"|awk '{print toupper($0)}')
+	else
+		x=$(echo "$i"|awk '{print tolower($0)}')
+	fi
+
+	if [ "$dir"$x"" = "$dir"$i"" ]
+	then
+		continue
+	fi
+		
+	if [ -e "$dir"$x"" ]
+	then
+		echo "File $x Exists. Enter o to overwrite or n for filename1: "		
+		read input
+
+		if [ $input = "o" ]
+		then 
+		if [ $pri == true ]
+		then
+			echo "Renaming $i to $x"
+		fi
+		mv -f "$dir"$i"" "$dir"$x"" 
+
+		elif [ $input = "n" ]
+		then
+		if [ $pri == true ]
+		then
+			echo "Renaming $i to $x"
+		fi
+	
+			mv "$dir"$i"" ""$dir"$x""1"
+
+		else
+			echo "Wrong Input"
+		fi
+
+		else
+		if [ $pri == true ]
+		then
+			echo "Renaming $i to $x"
+		fi
+	
+			mv "$dir"$i"" "$dir"$x""
+	fi	
+done
