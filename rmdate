@@ -1,0 +1,45 @@
+#!/bin/bash
+
+for i in $*
+do
+	for ((x=1 ; x <= 100000 ; x++))
+	do
+		dummy=$(echo $i. | cut -d "." -f "$x")
+		dummy2=$(echo $i | cut -d "_" -f "$x")
+	
+		if [ ! $dummy2 > /dev/null ]
+			then
+			second=$((x-1))
+			Last=$(echo $i | cut -d "_" -f $second)
+			echo $Last
+		fi
+
+
+		if [ ! $dummy > /dev/null ]
+		then
+			
+			count=$((x-1))
+			first=$(echo $i | cut  -d "." -f "$count")
+			echo $first
+			
+			
+		fi
+
+			#if [ $count -eq 1 ]
+			#then
+			#	final=$Last	
+			#else
+			#	final=$Last.$first
+	
+			#fi
+
+
+			
+			#echo Renaming $i to $final
+			#mv $i $final
+
+			#break
+	done
+
+
+done
