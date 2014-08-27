@@ -1,0 +1,99 @@
+#Changes Made:
+# I have replaced all the dependencies with $? and all the targets when compiling
+# with $@
+# I have also replaced all the targets in "all" by a Macro
+# I have also added the "-o" to CFLAGS.I had to change the Macro for the .c files suffix rules
+# Added the $<
+
+.SUFFIXES: .o .asm .cpp .c
+
+OBJS = prime math sub1 sub2 sub3 sub4 sub5 sub6 first memex dmaxt asm_io.o fprime quadt test_big_int
+AS=nasm
+ASFLAGS= -f elf -g
+CFLAGS= -m32 -o
+CC=gcc
+CXX=g++
+CFLAGS1= -m32
+
+.asm.o:
+	$(AS) $(ASFLAGS) $<
+
+.cpp.o:
+	$(CXX) -c $(CXXFLAGS) $<
+
+.c.o:
+	$(CC) -c $(CFLAGS1) $<
+
+all: $(OBJS)
+
+prime: driver.o prime.o asm_io.o
+	$(CC) $(CFLAGS) $@ $?
+
+math : driver.o math.o asm_io.o
+	$(CC) $(CFLAGS) $@ $?
+
+first : driver.o first.o asm_io.o
+	$(CC) $(CFLAGS) $@ $?
+
+sub1 : driver.o sub1.o asm_io.o
+	$(CC) $(CFLAGS) $@ $?
+
+sub2 : driver.o sub2.o asm_io.o
+	$(CC) $(CFLAGS) $@ $?
+
+sub3 : driver.o sub3.o asm_io.o
+	$(CC) $(CFLAGS) $@ $?
+
+sub4 : driver.o sub4.o main4.o asm_io.o
+	$(CC) $(CFLAGS) $@ $?
+
+sub5 : main5.o sub5.o asm_io.o
+	$(CC) $(CFLAGS) $@ $?
+
+sub6 : main6.o sub6.o
+	$(CC) $(CFLAGS) $@ $?
+
+asm_io.o : asm_io.asm
+	$(AS) $(ASFLAGS) -d ELF_TYPE $?
+
+array1 : driver.o array1.o array1c.o
+	$(CC) $(CFLAGS) $@ $?
+
+memex : memex.o memory.o
+	$(CC) $(CFLAGS) $@ $?
+
+dmaxt : dmaxt.o dmax.o
+	$(CC) $(CFLAGS) $@ $?
+
+quadt : quadt.o quad.o
+	$(CC) $(CFLAGS) $@ $?
+
+readt : readt.o read.o
+	$(CC) $(CFLAGS) $@ $?
+
+fprime : fprime.o prime2.o
+	$(CC) $(CFLAGS) $@ $?
+
+test_big_int : test_big_int.o big_int.o big_math.o
+	$(CXX) $(CXXFLAGS) -o $@ $?
+
+big_int.o : big_int.hpp
+
+test_big_int.o : big_int.hpp
+
+first.o : asm_io.inc first.asm
+
+sub1.o : asm_io.inc
+
+sub2.o : asm_io.inc
+
+sub3.o : asm_io.inc
+
+sub4.o : asm_io.inc
+
+main4.o : asm_io.inc
+
+driver.o : driver.c
+
+clean :
+	rm *.o
